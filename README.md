@@ -1,2 +1,2 @@
 # gs_analyzer
-How to parse and compare gsettings keys
+Compare gsettings keys by path, name, type, description
