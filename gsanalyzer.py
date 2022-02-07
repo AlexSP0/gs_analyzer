@@ -7,6 +7,8 @@ VERIFIED = 1
 MISSING = 2
 
 
+
+
 class GsAnalyzer:
     prevGsKeys = None
     currentGsKeys = None
@@ -48,18 +50,46 @@ class GsAnalyzer:
             if(currentKeysPath[keyPath] == VERIFIED):
                 continue
             else:
-                line = "Path: " + currentKeysPath[keyPath] + " "
+                line = "Path: " + keyPath + " "
                 if(currentKeysPath[keyPath]) == NOT_VERIFIED:
                     print("Путь: " + keyPath + " НОВЫй")
-                    line = line + " NEW!"
+                    line = line + " NEW!\n"
                 else: #MISSING
                     print("Путь: " + keyPath + " УДАЛЕН")
-                    line = line + " DELETED!"
+                    line = line + " DELETED!\n"
                 file.write(line)
         file.close() 
 
     def compareAllKeys(self, filename):
-        print("Сравнивае ключи:")
+        print("Сравниваем ключи:")
+        #создаем словари для проверки
+        prevKey = {}
+        currentKey = {}
+        for key in self.prevGsKeys:
+            prevKey[(key.path + " " + key.name)] = False
+        for key in self.currentGsKeys:
+            currentKey[(key.path + " " + key.name)] = NOT_VERIFIED
+        #Сравниваем словари
+        for key in prevKey:
+            if(key in currentKey):
+                currentKey[key] = VERIFIED
+            else:
+                currentKey[key] = MISSING
+        #сохраняем отчет в текстовый файл
+        file = open(filename, "w")
+        for key in currentKey:
+            if(currentKey[key] == VERIFIED):
+                continue
+            else:
+                line = "КЛЮЧ: " + key 
+                if(currentKey[key] == NOT_VERIFIED):
+                    print("Новый ключ: " + key)
+                    line = line + " NEW!\n"
+                else: #MISSING
+                    print("УДАЛЕН ключ: " + key)
+                    line = line + " DELETED!\n"
+                file.write(line)
+        file.close()        
 
     def comparePath(prevKey, currentKey):
         if(prevKey.path != currentKey.path):
