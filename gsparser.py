@@ -23,24 +23,26 @@ class GsParser:
         #Парсим тип ключа и перечислители, если они есть
         print("Parsing types!")
         for key in self.keys:
+            print("Parsing type for: " + key.path + " " + key.name)
             key_type = subprocess.run(["gsettings", "range", key.path, key.name], stdout=subprocess.PIPE, text=True)
             key.parseType(key_type.stdout)
 
         #Парсим описание ключа
         print("Parsing descriptions!")
         for key in self.keys:
-            print("parsing decriptions key: " + key.name)
+            print("parsing descriptions key: " + key.name)
             key_description = subprocess.run(["gsettings", "describe", key.path, key.name], stdout=subprocess.PIPE, text=True )
             key.parseDescription(key_description.stdout)
 
     #загружаем ключи из текстового файла
     def loadKeysFromTextFile(self, filename):
+        print("Загружаем ключи из файла: " + filename)
         file = open(filename, "r")
         lines = file.readlines()
         file.close()
         self.keys = []
         for line in lines:
-            new_key = _gskey.GsKey()
+            new_key = gskey.GsKey()
             new_key.setKeyFromLine(line)
             self.keys.append(new_key)
 
@@ -48,7 +50,7 @@ class GsParser:
     def saveKeysInTextFile(self, filename):
         file = open(filename, "w")
         for key in self.keys:
-            file.write(key.getTotalLine()+"\n")
+            file.write(key.getTotalLine())
         file.close()
         
         #сохраняем ключи в виде csv-файла
